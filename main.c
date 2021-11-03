@@ -10,17 +10,13 @@ int main (void) {
 	LED_init();
 	timer_init();
 
-	int count = 0;
-
 	while (1) {
-		if(TIFR0 & (1<<OCF0A)){
-			TIFR0 |= (1<<OCF0A);
-			count++;
-		}
-		if (count >= 10) {
-		   	BIT_FLIP(PORTB,RED);
-			count = 0;
-		}	
+		OCR2A = 20;
+		_delay_ms(1000);
+		OCR2A = 128;
+		_delay_ms(1000);
+		OCR2A = 200;
+		_delay_ms(1000);
 	}
 	return 1;
 }

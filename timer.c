@@ -2,34 +2,22 @@
 #include <avr/interrupt.h>
 #include "timer.h"
 
-//Calculate Output Compare value
 
-//((clock speed/prescaler) * delay)-1
-//(16000000/1024)*(10/1000)-1
-
-uint16_t OutputCompare(uint16_t prescaler, uint8_t milliseconds){
-	uint16_t freq_scaled = F_CPU/prescaler; //15625
-	uint16_t seconds = milliseconds/1000;   //0,01
-	uint16_t ticks = freq_scaled*seconds;   //156,25 ~ 156
-	ticks = ticks - 1;						//Correct for starting at 0
-
-	return ticks;
-}
-
+/*
+clock speed / (prescaler * (TOP + 1))
+16000000 / (64 * (255+1)) = 976,5625
+*/
 void timer_init() {
-	//
-    /*Enable CTC*/
-	TCCR0A &= ~(1 << WGM00);
-	TCCR0A |= (1 << WGM01);
-	TCCR0A &= ~(1 << WGM02);
+    /*Fast PWM*/
+	TCCR2A |= (1 << WGM20);
+	TCCR2A |= (1 << WGM21);
+	TCCR2B &= ~(1 <<  WGM22); 
 
-    /*prescaler 1024*/
-	TCCR0B |= (1 << CS00) | (1 << CS02);
-	TCCR0A &= ~(1 << CS01);
-    
-	/* Frequency based on prescaler 1024 and 10 milliseconds*/
-	OCR0A = OutputCompare(1024, 10);
-    
-	/*Counter init 0*/
-	TCNT0 = 0;
+	/*Non inverting Mode*/
+	TCCR2A &= ~(1 << COM2A0);
+	TCCR2A |= (1 << COM2A1);
+	
+    /*Prescaler 64*/
+	TCCR2B &= ~(1 << CS20) | (1 << CS21);
+	TCCR2B |= (1 << CS22);
 }
