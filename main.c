@@ -10,13 +10,14 @@ int main (void) {
 	LED_init();
 	timer_init();
 
+	uint8_t direction = 1;
+	uint8_t pwmvalue = 1;
+
 	while (1) {
-		OCR2A = 20;
-		_delay_ms(1000);
-		OCR2A = 128;
-		_delay_ms(1000);
-		OCR2A = 200;
-		_delay_ms(1000);
+		if(TIFR0 & (1<<OCF0A)){
+			TIFR0 |= (1<<OCF0A);
+			OCR2A = simple_ramp(&pwmvalue, &direction);
+		}
 	}
 	return 1;
 }

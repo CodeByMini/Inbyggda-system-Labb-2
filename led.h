@@ -13,6 +13,7 @@
 #define RED PB3
 
 void LED_init(void);
+uint8_t simple_ramp(uint8_t *, uint8_t *);
 
 #endif
 

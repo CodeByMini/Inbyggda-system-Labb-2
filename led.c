@@ -12,3 +12,11 @@ void LED_init() {
     PORTB |= (1 << GREEN);
     PORTB |= (1 << RED);
 }
+
+uint8_t simple_ramp(uint8_t *pwm, uint8_t *dir){
+	if(*pwm == 255 || *pwm == 0){
+		*dir *= -1;
+	}
+	*pwm += *dir;
+	return *pwm;
+}
